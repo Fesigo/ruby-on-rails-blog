@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  allow_unauthenticated_access only: %i[ new create ]
+
   def new
     @comment = Comment.new
   end
@@ -21,6 +23,6 @@ class CommentsController < ApplicationController
 
   private
     def comment_params
-      params.expect(comment: [ :post_id, :content, :guest_name ])
+      params.expect(comment: [ :post_id, :content, :guest_name, :user_id ])
     end
 end

@@ -11,10 +11,14 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label "Name", style: "display: block" %>
-    <%= form.text_field :guest_name %>
-  </div>
+  <% if authenticated? %>
+    <%= form.hidden_field :user_id, value: Current.user.id %>
+  <% else %>
+    <div>
+      <%= form.label "Name", style: "display: block" %>
+      <%= form.text_field :guest_name %>
+    </div>
+  <% end %>
 
   <div>
     <%= form.label "Comment", style: "display: block" %>

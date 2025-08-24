@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  allow_unauthenticated_access only: %i[ index show ]
   before_action :set_post, only: %i[ show edit update destroy ]
 
   def index
@@ -56,6 +57,6 @@ class PostsController < ApplicationController
     end
 
     def post_params
-      params.expect(post: [ :title, :content ])
+      params.expect(post: [ :title, :content, :user_id ])
     end
 end

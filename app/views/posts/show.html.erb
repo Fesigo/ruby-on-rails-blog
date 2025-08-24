@@ -8,7 +8,7 @@
     <% @post.comments.each do |comment| %>
       <li>
         <p>
-          <strong><%= comment.guest_name %>:</strong>
+          <strong><%= comment.guest_name || comment.user&.name %>:</strong>
           <%= comment.content %>
         </p>
       </li>
@@ -17,7 +17,9 @@
 
   <h4>Leave a comment</h4>
   <%= render "comments/form", post: @post, comment: @post.comments.build %>
-  <%= link_to "Edit this post", edit_post_path(@post) %> |
+  <% if authenticated? && @post.id == Current.user.id %>
+    <%= link_to "Edit this post", edit_post_path(@post) %>
+    <%= button_to "Destroy this post", @post, method: :delete %>
+  <% end %>
   <%= link_to "Back to posts", posts_path %>
-  <%= button_to "Destroy this post", @post, method: :delete %>
 </div>
