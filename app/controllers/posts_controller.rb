@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
 
   def index
-    @posts = Post.all
+    @posts = Post.order(created_at: :desc)
   end
 
   def show
@@ -11,9 +11,6 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
-  end
-
-  def edit
   end
 
   def create
@@ -28,6 +25,9 @@ class PostsController < ApplicationController
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def edit
   end
 
   def update
@@ -53,7 +53,7 @@ class PostsController < ApplicationController
 
   private
     def set_post
-      @post = Post.find(params.expect(:id))
+      @post = Post.friendly.find(params.expect(:id))
     end
 
     def post_params
