@@ -1,25 +1,63 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @post.title %>
 
-<%= render @post %>
+<div class="max-w-3xl mx-auto mt-8 px-4">
 
-<div>
-  <h3>Comentários</h3>
-  <ul>
-    <% @post.comments.each do |comment| %>
-      <li>
-        <p>
-          <strong><%= comment.guest_name || comment.user&.name %>:</strong>
-          <%= comment.content %>
-        </p>
-      </li>
-    <% end %>
-  </ul>
-
-  <h4>Leave a comment</h4>
-  <%= render "comments/form", post: @post, comment: @post.comments.build %>
-  <% if authenticated? && @post.id == Current.user.id %>
-    <%= link_to "Edit this post", edit_post_path(@post) %>
-    <%= button_to "Destroy this post", @post, method: :delete %>
+  <% if notice.present? %>
+    <p class="mb-4 rounded-lg bg-green-100 text-green-800 p-3 text-sm">
+      <%= notice %>
+    </p>
   <% end %>
-  <%= link_to "Back to posts", posts_path %>
+
+  <!-- Post -->
+  <div class="border rounded-lg shadow-sm p-6 bg-white mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+      <%= @post.title %>
+    </h1>
+
+    <div class="text-sm text-gray-500 mb-4">
+      <span>By <%= @post.user.name %></span> •
+      <span><%= @post.created_at.strftime("%B %d, %Y") %></span>
+    </div>
+
+    <div class="prose max-w-none text-gray-800 mb-4">
+      <%= simple_format(@post.content) %>
+    </div>
+
+    <% if authenticated? && @post.user_id == Current.user.id %>
+      <div class="flex gap-4 mt-4">
+        <%= link_to "Edit this post", edit_post_path(@post),
+              class: "text-blue-600 font-medium hover:underline" %>
+        <%= button_to "Destroy this post", @post, method: :delete, data: { turbo_confirm: "Are you sure?" },
+              class: "text-red-600 font-medium hover:underline" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Comments -->
+  <div class="mb-8">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+      Comments (<%= @post.comments.count %>)
+    </h3>
+
+    <ul class="space-y-4 mb-6">
+      <% @post.comments.each do |comment| %>
+        <li class="bg-white border rounded-lg shadow-sm p-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="font-semibold text-gray-900">
+              <%= comment.guest_name.presence || comment.user&.name || "Anonymous" %>
+            </span>
+            <span class="text-xs text-gray-400">
+              <%= comment.created_at.strftime("%b %d, %Y %H:%M") %>
+            </span>
+          </div>
+          <p class="text-gray-700"><%= comment.content %></p>
+        </li>
+      <% end %>
+    </ul>
+
+    <h4 class="text-lg font-medium text-gray-800 mb-2">Leave a comment</h4>
+    <div class="mb-6 bg-gray-50 p-4 rounded-lg border">
+      <%= render "comments/form", post: @post, comment: @post.comments.build %>
+    </div>
+  </div>
 </div>
